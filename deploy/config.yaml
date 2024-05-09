@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scheduler-config
+  namespace: kube-system
+data:
+  scheduler-config.yaml: |
+    apiVersion: kubescheduler.config.k8s.io/v1
+    kind: KubeSchedulerConfiguration
+    leaderElection:
+      leaderElect: false
+      leaseDuration: 15s
+      renewDeadline: 10s
+      resourceName: mig-scheduler
+      resourceNamespace: kube-system
+      retryPeriod: 2s
+    profiles:
+      - schedulerName: mig-scheduler
+        plugins:
+          filter:
+            enabled:
+            - name: MigScheduling

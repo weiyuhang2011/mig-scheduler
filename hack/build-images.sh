@@ -32,7 +32,7 @@ RELEASE_VERSION=${RELEASE_VERSION:-"v0.0.0"}
 BUILDER=${BUILDER:-"docker"}
 
 if ! command -v ${BUILDER} && command -v nerdctl >/dev/null; then
-  BUILDER=nerdctl
+  BUILDER=podman
 fi
 
 ARCH=${ARCH:-$(go env GOARCH)}
@@ -47,8 +47,8 @@ ${BUILDER} build \
            --build-arg ARCH=${ARCH} \
            --build-arg RELEASE_VERSION=${RELEASE_VERSION} \
            -t ${REGISTRY}/${IMAGE} .
-${BUILDER} build \
-           -f ${CONTROLLER_DIR}/Dockerfile \
-           --build-arg ARCH=${ARCH} \
-           --build-arg RELEASE_VERSION=${RELEASE_VERSION} \
-           -t ${REGISTRY}/${CONTROLLER_IMAGE} .
+# ${BUILDER} build \
+#            -f ${CONTROLLER_DIR}/Dockerfile \
+#            --build-arg ARCH=${ARCH} \
+#            --build-arg RELEASE_VERSION=${RELEASE_VERSION} \
+#            -t ${REGISTRY}/${CONTROLLER_IMAGE} .

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mig-scheduler
+  namespace: kube-system
+  labels:
+    component: mig-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: mig-scheduler
+  template:
+    metadata:
+      labels:
+        component: mig-scheduler
+    spec:
+      serviceAccount: migscheduling-sa
+      volumes:
+        - name: scheduler-config
+          configMap:
+            name: scheduler-config
+      containers:
+        - name: mig-scheduler
+          image: 192.168.40.132:5000/scheduler-plugins/kube-scheduler:v2
+          imagePullPolicy: Always
+          args:
+            - kube-scheduler
+            - --config=/scheduler/scheduler-config.yaml
+            - --v=3
+          volumeMounts:
+            - name: scheduler-config
+              mountPath: /scheduler

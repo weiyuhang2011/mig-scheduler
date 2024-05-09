@@ -1,0 +1,129 @@
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: migrate-scheduler-role
+rules:
+  - apiGroups: ["migrate.openeuler.org"]
+    resources: ["migrators", "migrators/status", "migrators/finalizers"]
+    verbs: ["get", "list", "watch", "patch", "update"]
+  - apiGroups: [""]
+    resources: ["pods", "pods/status"]
+    verbs: ["get", "list", "watch", "patch", "update", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["nodes", "namespaces"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+      - events
+    verbs:
+      - create
+      - get
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - bindings
+      - pods/binding
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - replicationcontrollers
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - apps
+      - extensions
+    resources:
+      - replicasets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - apps
+    resources:
+      - statefulsets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumeclaims
+      - persistentvolumes
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "storage.k8s.io"
+    resources:
+      - storageclasses
+      - csinodes
+      - csidrivers
+      - csistoragecapacities
+    verbs:
+      - watch
+      - list
+      - get
+  - apiGroups:
+      - "coordination.k8s.io"
+    resources:
+      - leases
+    verbs:
+      - create
+      - get
+      - list
+      - update
+  - apiGroups:
+      - "events.k8s.io"
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: migrate-scheduler-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: migrate-scheduler-role
+subjects:
+  - kind: ServiceAccount
+    name: migscheduling-sa
+    namespace: kube-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: migscheduling-sa
+  namespace: kube-system
