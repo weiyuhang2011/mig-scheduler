@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -64,12 +65,9 @@ func (pl *MigScheduling) Filter(ctx context.Context, state *framework.CycleState
 	podName := migrator.Spec.PodName
 	podNamespace := migrator.Spec.PodNameSpace
 	klog.Infof("Migrator %s PodName: %s, PodNamespace: %s", migrator.Name, podName, podNamespace)
-	migPods, err := pl.clientSet.CoreV1().Pods(podNamespace).Get(ctx, podName, metav1.GetOptions{})
-	if err != nil {
-		klog.ErrorS(err, "Failed to get pod")
-		return framework.NewStatus(framework.Error, "Failed to get pod that need to be migrated")
-	}
-	if migPods.ObjectMeta.GenerateName == pod.ObjectMeta.GenerateName && migrator.Spec.Destination != nodeInfo.Node().Name {
+	deployName := strings.Split(podName, "-")[0]
+	newPodDeployName := strings.Split(pod.Name, "-")[0]
+	if deployName == newPodDeployName && migrator.Spec.Destination != nodeInfo.Node().Name {
 		klog.Infof("Migrate Destination: %s, Current Node: %s, return error", migrator.Spec.Destination, nodeInfo.Node().Name)
 		return framework.NewStatus(framework.Unschedulable, "Failed to schedule pod to not destination node: "+nodeInfo.Node().Name)
 	}

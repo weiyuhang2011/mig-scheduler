@@ -22,7 +22,7 @@ spec:
             name: scheduler-config
       containers:
         - name: mig-scheduler
-          image: 192.168.40.132:5000/scheduler-plugins/kube-scheduler:v2
+          image: 192.168.40.132:5000/scheduler-plugins/kube-scheduler:v3
           imagePullPolicy: Always
           args:
             - kube-scheduler
