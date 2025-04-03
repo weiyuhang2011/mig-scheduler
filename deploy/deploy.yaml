@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mig-scheduler
+  name: matrix-scheduler
   namespace: kube-system
   labels:
-    component: mig-scheduler
+    component: matrix-scheduler
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: mig-scheduler
+      component: matrix-scheduler
   template:
     metadata:
       labels:
-        component: mig-scheduler
+        component: matrix-scheduler
     spec:
       serviceAccount: migscheduling-sa
       volumes:
@@ -21,8 +21,8 @@ spec:
           configMap:
             name: scheduler-config
       containers:
-        - name: mig-scheduler
-          image: 192.168.40.132:5000/scheduler-plugins/kube-scheduler:v3
+        - name: matrix-scheduler
+          image: 192.168.40.118:5000/scheduler-plugins/kube-scheduler:latest
           imagePullPolicy: Always
           args:
             - kube-scheduler

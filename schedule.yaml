@@ -7,11 +7,11 @@ leaderElection:
   leaderElect: false
   leaseDuration: 15s
   renewDeadline: 10s
-  resourceName: mig-scheduler
+  resourceName: matrix-scheduler
   resourceNamespace: kube-system
   retryPeriod: 2s
 profiles:
-  - schedulerName: mig-scheduler
+  - schedulerName: matrix-scheduler
     plugins:
       filter:
         enabled:
